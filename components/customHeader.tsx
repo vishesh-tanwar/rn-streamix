@@ -1,8 +1,12 @@
 import { MaterialIcons } from "@expo/vector-icons";
+import { usePathname } from "expo-router";
 import { Text, View } from "react-native";
 import { CategoryBar } from "./categoryBar";
 
 const CustomHeader = () => {
+    const pathName = usePathname();
+
+    const isHome = pathName === "/" || pathName === "/index";
     return (
         <View className="pt-10 bg-white">
             {/* Top Header Row */}
@@ -19,7 +23,7 @@ const CustomHeader = () => {
             </View>
 
             {/* Scrollable Categories */}
-            <CategoryBar />
+            {isHome && <CategoryBar />}
         </View>
     );
 };

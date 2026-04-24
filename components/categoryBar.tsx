@@ -15,7 +15,7 @@ export const CategoryBar = () => {
                     index === 0 ? (
                         <Pressable onPress={() => navigation.dispatch(DrawerActions.openDrawer())
                         } key={index} className="px-4 py-2 bg-gray-200 rounded-xl mx-2 flex-row items-center">
-                            <MaterialIcons name="menu" size={12} />
+                            <MaterialIcons name="arrow-circle-left" size={12} color="orange" />
                         </Pressable>
                     ) :
                         <View key={index} className="px-4 py-2 bg-gray-200 rounded-xl mx-2">
