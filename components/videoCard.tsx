@@ -1,4 +1,5 @@
 import Icon from "@/assets/images/icon.png";
+import thumbnail from "@/assets/images/photo.jpg";
 
 import { Image, Text, View } from "react-native";
 
@@ -6,7 +7,7 @@ export default function VideoCard() {
     return (
         <View className="m-2 bg-white rounded-lg overflow-hidden">
             <View >
-                <Image source={{ uri: "https://i.ytimg.com/vi/VIDEO_ID/maxresdefault.jpg" }} style={{ width: "100%", height: 200 }} />
+                <Image source={thumbnail} style={{ width: "100%", height: 200 }} />
             </View>
             <View>
                 <View className="flex-row items-start mb-2">
