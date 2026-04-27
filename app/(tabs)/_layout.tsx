@@ -1,15 +1,18 @@
-import CustomHeader from '@/components/customHeader'
-import { MaterialIcons } from '@expo/vector-icons'
-import { Tabs } from 'expo-router'
-import React from 'react'
+import CustomHeader from "@/components/customHeader";
+import { MaterialIcons } from "@expo/vector-icons";
+import { Tabs } from "expo-router";
+import React from "react";
 
 const _layout = () => {
   return (
-    <Tabs screenOptions={{
-      header: () => <CustomHeader />,
-      tabBarActiveTintColor: "orange",
-      tabBarInactiveTintColor: "gray",
-    }}>
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        // header: () => <CustomHeader />,
+        tabBarActiveTintColor: "orange",
+        tabBarInactiveTintColor: "gray",
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
@@ -61,12 +64,8 @@ const _layout = () => {
           ),
         }}
       />
-
-
-
     </Tabs>
+  );
+};
 
-  )
-}
-
-export default _layout
+export default _layout;
