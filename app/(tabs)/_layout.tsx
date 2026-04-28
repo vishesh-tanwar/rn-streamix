@@ -7,8 +7,6 @@ const _layout = () => {
   return (
     <Tabs
       screenOptions={{
-        headerShown: false,
-        // header: () => <CustomHeader />,
         tabBarActiveTintColor: "orange",
         tabBarInactiveTintColor: "gray",
       }}
@@ -17,6 +15,7 @@ const _layout = () => {
         name="index"
         options={{
           title: "Home",
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="home" size={size} color={color} />
           ),
@@ -49,6 +48,7 @@ const _layout = () => {
         name="subscriptions"
         options={{
           title: "Subscriptions",
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="subscriptions" size={size} color={color} />
           ),
@@ -59,6 +59,7 @@ const _layout = () => {
         name="profile"
         options={{
           title: "Profile",
+          header: () => <CustomHeader />,
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="person" size={size} color={color} />
           ),

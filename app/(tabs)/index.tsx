@@ -1,22 +1,22 @@
-import React, { useRef } from "react";
-import { Animated, View } from "react-native";
 import CustomHeader from "@/components/customHeader";
 import VideoCard from "@/components/videoCard";
-
+import React, { useRef } from "react";
+import { Animated, Image, NativeScrollEvent, NativeSyntheticEvent, View } from "react-native";
+import ReelImage from "../../assets/images/reel.jpg";
 const Home = () => {
   const headerTranslateY = useRef(new Animated.Value(0)).current;
   const lastScrollY = useRef(0);
 
   const HEADER_HEIGHT = 120;
 
-  const handleScroll = (event) => {
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const currentY = event.nativeEvent.contentOffset.y;
 
-    if (currentY > lastScrollY.current + 5) {
+    if (currentY > lastScrollY.current + 15) {
       // user scrolling DOWN → hide header
       Animated.timing(headerTranslateY, {
         toValue: -HEADER_HEIGHT,
-        duration: 300,
+        duration: 350,
         useNativeDriver: true,
       }).start();
     } else if (currentY < lastScrollY.current - 2) {
@@ -48,15 +48,42 @@ const Home = () => {
         <CustomHeader />
       </Animated.View>
 
-      {/* List */}
-      <Animated.FlatList
-        data={[1, 2, 3, 4, 5]}
-        keyExtractor={(item) => item.toString()}
-        renderItem={() => <VideoCard />}
-        contentContainerStyle={{ paddingTop: HEADER_HEIGHT }}
+      <Animated.ScrollView
         onScroll={handleScroll}
         scrollEventThrottle={16}
-      />
+        contentContainerStyle={{ paddingTop: HEADER_HEIGHT }}
+      >
+        {/* Grid */}
+        <View className="flex-row flex-wrap p-2">
+          {[1, 2, 3, 4].map((item) => (
+            <View
+              key={item}
+              style={{
+                width: "50%",
+                height: 250,
+                padding: 5,
+              }}
+            >
+              <View
+                style={{
+                  borderRadius: 10,
+                  overflow: "hidden",
+                }}
+              >
+                <Image
+                  source={ReelImage}
+                  style={{ width: "100%", height: "100%" }}
+                />
+              </View>
+            </View>
+          ))}
+        </View>
+
+        {/* List */}
+        {[1, 2, 3, 4, 5].map((item) => (
+          <VideoCard key={item} />
+        ))}
+      </Animated.ScrollView>
     </View>
   );
 };
