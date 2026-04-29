@@ -1,7 +1,9 @@
 import Icon from "@/assets/images/icon.png";
 import thumbnail from "@/assets/images/photo.jpg";
 
-import { Image, Text, View, StyleSheet } from "react-native";
+import { Image, Text, View, StyleSheet, Pressable } from "react-native";
+import { useRouter } from "expo-router";
+import { Video } from "@/app/(tabs)";
 
 export default function VideoCard({
   height = 200,
@@ -9,19 +11,22 @@ export default function VideoCard({
   showChannelIcon = true,
   overlay = false,
   overlayIcon = null,
+  video
 }: {
   height?: number;
   width?: number;
   showChannelIcon?: boolean;
   overlay?: boolean;
   overlayIcon?: React.ReactNode;
+  video: Video
 }) {
+  const router = useRouter();
   return (
-    <View className="m-2 bg-white rounded-lg overflow-hidden" style={{ width }}>
+    <Pressable onPress={() => router.push(`/video/${video.id}`)} className="m-2 bg-white rounded-lg overflow-hidden" style={{ width }}>
       {/* Image container */}
       <View style={{ height, position: "relative" }}>
         <Image
-          source={thumbnail}
+          source={{ uri: video.thumbnail }}
           style={{ width: "100%", height: "100%" }}
           resizeMode="cover"
         />
@@ -48,14 +53,14 @@ export default function VideoCard({
       <View className="flex-row items-start mb-2 mt-1">
         {showChannelIcon && (
           <View className="bg-gray-300 rounded-full w-10 h-10 ml-2 overflow-hidden">
-            <Image source={Icon} style={{ width: "100%", height: "100%" }} />
+            <Image source={{ uri: video.channelLogo }} style={{ width: "100%", height: "100%" }} />
           </View>
         )}
         <View>
-          <Text className="text-sm text-gray-500 px-2">Channel Name</Text>
-          <Text className="text-sm text-gray-500 px-2">Views • Time</Text>
+          <Text className="text-sm text-gray-500 px-2">{video.channelName}</Text>
+          <Text className="text-sm text-gray-500 px-2">Views : {video.views} | Likes : {video.likes}</Text>
         </View>
       </View>
-    </View>
+    </Pressable>
   );
 }
