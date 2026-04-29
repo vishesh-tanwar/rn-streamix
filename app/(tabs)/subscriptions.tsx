@@ -5,9 +5,11 @@ import VideoCard from "@/components/videoCard";
 import React, { useRef } from "react";
 import { Animated, Image, NativeScrollEvent, NativeSyntheticEvent, Pressable, Text, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { videoMap } from ".";
 
 
 const subscriptions = () => {
+  const videos = Object.values(videoMap);
   const headerTranslateY = useRef(new Animated.Value(0)).current;
   const lastScrollY = useRef(0);
 
@@ -74,9 +76,9 @@ const subscriptions = () => {
         </View>
         <CategoryBar categories={["All", "Today", "Videos", "Reels"]} />
 
-        {[1, 2, 3, 4, 5].map((item) => {
-          return <VideoCard key={item} />;
-        })}
+        {videos.map((item) => (
+          <VideoCard key={item.id} video={item} />
+        ))}
       </Animated.ScrollView>
     </View>
   );

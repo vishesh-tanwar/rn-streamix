@@ -2,8 +2,10 @@ import VideoCard from "@/components/videoCard";
 import { MaterialIcons } from "@expo/vector-icons";
 import React from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
+import { videoMap } from ".";
 
 const profile = () => {
+  const videos = Object.values(videoMap);
   return (
     <ScrollView className="flex-1 bg-white p-4">
       <View className="flex-row justify-start items-center h-25 mb-4">
@@ -22,13 +24,13 @@ const profile = () => {
         showsHorizontalScrollIndicator={false}
         className="mb-4 h-40"
       >
-        {[1, 2, 3, 4, 5].map((item) => (
+        {videos.map((item) => (
           <View
-            key={item}
+            key={item.id}
             className="mr-4"
             style={{ width: 150, height: 80 }} // 👈 final size you want
           >
-            <VideoCard height={80} width={150} showChannelIcon={false} />
+            <VideoCard height={80} width={150} showChannelIcon={false} video={item} />
           </View>
         ))}
       </ScrollView>
@@ -45,6 +47,7 @@ const profile = () => {
           <>
             <View className="mr-4" style={{ width: 150, height: 80 }}>
               <VideoCard
+                video={videos[0]}
                 height={80}
                 width={150}
                 showChannelIcon={false}
@@ -56,6 +59,7 @@ const profile = () => {
             </View>
             <View className="" style={{ width: 150, height: 80 }}>
               <VideoCard
+                video={videos[0]}
                 height={80}
                 width={150}
                 showChannelIcon={false}
