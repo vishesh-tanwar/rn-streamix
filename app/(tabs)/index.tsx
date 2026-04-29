@@ -1,8 +1,8 @@
 import CustomHeader from "@/components/customHeader";
 import VideoCard from "@/components/videoCard";
 import React, { useRef } from "react";
-import { Animated, Image, NativeScrollEvent, NativeSyntheticEvent, View } from "react-native";
-import ReelImage from "../../assets/images/reel.jpg";
+import { Animated, Image, NativeScrollEvent, NativeSyntheticEvent, Pressable, Text, View } from "react-native";
+import { useRouter } from "expo-router";
 
 export type Video = {
   id: string;
@@ -75,8 +75,69 @@ export const videoMap: Record<string, Video> = {
   },
 };
 
+export const reelMap: Record<string, Video> = {
+  "1": {
+    id: "1",
+    title: "Flutter vs React Native",
+    description: "Full comparison ",
+    channelName: "CodeWithVish",
+    channelLogo: "https://i.pravatar.cc/100",
+    thumbnail: "https://picsum.photos/300/207",
+    views: 12000,
+    likes: 500,
+    duration: 123421
+  },
+  "2": {
+    id: "2",
+    title: "Build YouTube Clone",
+    description: "Step by step jnfea jaenfja fdjanefjandj ajna afjaenfa jana ajeneajf fejnfenfe",
+    channelName: "DevHub",
+    channelLogo: "https://i.pravatar.cc/101",
+    thumbnail: "https://picsum.photos/300/204",
+    views: 54000,
+    likes: 1200,
+    duration: 123421
+
+  },
+  "3": {
+    id: "3",
+    title: "hey ya welcome to vlog",
+    description: "Step by step jsnfaj jfnajf akjsnjas fkjandfhoibnv ujebnv ouvn ouejnve er",
+    channelName: "DevHub",
+    channelLogo: "https://i.pravatar.cc/101",
+    thumbnail: "https://picsum.photos/300/202",
+    views: 54000,
+    likes: 1200,
+    duration: 123421
+
+  }, "4": {
+    id: "4",
+    title: "video 4",
+    description: "Step by ste 44444p",
+    channelName: "DevHub",
+    channelLogo: "https://i.pravatar.cc/101",
+    thumbnail: "https://picsum.photos/300/203",
+    views: 54000,
+    likes: 1200,
+    duration: 123421
+
+  }, "5": {
+    id: "5",
+    title: "video 5",
+    description: "Step by step 5555555",
+    channelName: "DevHub",
+    channelLogo: "https://i.pravatar.cc/101",
+    thumbnail: "https://picsum.photos/300/201",
+    views: 54000,
+    duration: 123421,
+    likes: 1200,
+  },
+};
+
 const Home = () => {
+  const router = useRouter();
   const videos = Object.values(videoMap);
+  const reels = Object.values(reelMap).slice(0, 4);
   const headerTranslateY = useRef(new Animated.Value(0)).current;
   const lastScrollY = useRef(0);
 
@@ -128,9 +189,15 @@ const Home = () => {
       >
         {/* Grid */}
         <View className="flex-row flex-wrap p-2">
-          {[1, 2, 3, 4].map((item) => (
-            <View
-              key={item}
+          {reels.map((reel) => (
+            <Pressable
+              key={reel.id}
+              onPress={() =>
+                router.push({
+                  pathname: "/(tabs)/reels",
+                  params: { reelId: reel.id },
+                })
+              }
               style={{
                 width: "50%",
                 height: 250,
@@ -139,19 +206,40 @@ const Home = () => {
             >
               <View
                 style={{
+                  flex: 1,
                   borderRadius: 10,
                   overflow: "hidden",
+                  position: "relative",
                 }}
               >
+                {/* Thumbnail */}
                 <Image
-                  source={ReelImage}
+                  source={{ uri: reel.thumbnail }}
                   style={{ width: "100%", height: "100%" }}
                 />
+
+                {/* 🔥 Description overlay */}
+                <View
+                  style={{
+                    position: "absolute",
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    backgroundColor: "rgba(0,0,0,0.5)",
+                    padding: 6,
+                  }}
+                >
+                  <Text
+                    numberOfLines={2}
+                    style={{ color: "white", fontSize: 12 }}
+                  >
+                    {reel.description}
+                  </Text>
+                </View>
               </View>
-            </View>
+            </Pressable>
           ))}
         </View>
-
 
         {/* Map */}
         {videos.map((video) => (
