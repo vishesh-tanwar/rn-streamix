@@ -1,9 +1,7 @@
-import Icon from "@/assets/images/icon.png";
-import thumbnail from "@/assets/images/photo.jpg";
-
 import { Image, Text, View, StyleSheet, Pressable } from "react-native";
 import { useRouter } from "expo-router";
 import { Video } from "@/app/(tabs)";
+import { formatDuration } from "@/functions/onNumbers";
 
 export default function VideoCard({
   height = 200,
@@ -31,7 +29,23 @@ export default function VideoCard({
           resizeMode="cover"
         />
 
-        {/* Overlay stacked on the image */}
+        <View
+          style={{
+            position: "absolute",
+            bottom: 6,
+            right: 6,
+            backgroundColor: "rgba(0,0,0,0.8)",
+            paddingHorizontal: 6,
+            paddingVertical: 2,
+            borderRadius: 4,
+          }}
+        >
+          <Text style={{ color: "white", fontSize: 12 }}>
+            {formatDuration(video.duration)}
+          </Text>
+        </View>
+
+
         {overlay && (
           <View
             style={[
@@ -56,9 +70,12 @@ export default function VideoCard({
             <Image source={{ uri: video.channelLogo }} style={{ width: "100%", height: "100%" }} />
           </View>
         )}
-        <View>
-          <Text className="text-sm text-gray-500 px-2">{video.channelName}</Text>
-          <Text className="text-sm text-gray-500 px-2">Views : {video.views} | Likes : {video.likes}</Text>
+        <View className="px-2 flex-1 pb-2">
+          <Text numberOfLines={1}>{video.description}</Text>
+          <View className="flex-1 flex-row justify-between items-center">
+            <Text className="text-sm text-gray-500">{video.channelName}</Text>
+            <Text className="text-sm text-gray-500">Views : {video.views} | Likes : {video.likes}</Text>
+          </View>
         </View>
       </View>
     </Pressable>
