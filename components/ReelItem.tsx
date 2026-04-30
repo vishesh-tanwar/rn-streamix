@@ -1,4 +1,5 @@
 import { Video } from "@/data/videos";
+import { MaterialIcons } from "@expo/vector-icons";
 import { useIsFocused } from "@react-navigation/native";
 import { VideoView, useVideoPlayer } from "expo-video";
 import React, { useEffect, useState } from "react";
@@ -22,7 +23,6 @@ const ReelItem =
             }
         );
 
-        // 🔥 control play/pause
         useEffect(() => {
             if (!player) return;
 
@@ -43,9 +43,25 @@ const ReelItem =
                     <VideoView
                         player={player}
                         style={styles.video}
-                        contentFit="cover"
+                        contentFit="contain"
                         nativeControls={false}
                     />
+
+                    {paused && (
+                        <View
+                            className="absolute top-[47%] left-[43%] h-16 w-16 rounded-full items-center justify-center"
+                            style={{
+                                backgroundColor: "rgba(0,0,0,0.5)",
+                                zIndex: 10,
+                            }}
+                        >
+                            <MaterialIcons
+                                name="play-arrow"
+                                color="orange"
+                                size={40}
+                            />
+                        </View>
+                    )}
 
                     {/* 🔥 Overlay UI */}
                     <View style={styles.overlay}>

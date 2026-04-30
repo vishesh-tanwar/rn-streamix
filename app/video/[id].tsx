@@ -46,7 +46,6 @@ export default function VideoScreen() {
             {isBuffering && (
                 <View style={styles.loader}>
                     <ActivityIndicator size="large" color="orange" />
-                    <Text className="text-red">sdadadsd</Text>
                 </View>
             )}
 

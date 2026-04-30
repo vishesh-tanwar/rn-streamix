@@ -1,7 +1,7 @@
-import { Image, Text, View, StyleSheet, Pressable } from "react-native";
-import { useRouter } from "expo-router";
-import { Video } from "@/app/(tabs)";
+import { Video } from "@/data/videos";
 import { formatDuration } from "@/functions/onNumbers";
+import { useRouter } from "expo-router";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 export default function VideoCard({
   height = 200,

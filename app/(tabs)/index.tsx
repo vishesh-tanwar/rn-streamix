@@ -1,14 +1,23 @@
 import CustomHeader from "@/components/customHeader";
 import VideoCard from "@/components/videoCard";
-import { reelMap, videoMap } from "@/data/videos";
+import { videoMap } from "@/data/videos";
+import { useReelStore } from "@/state/reelStore";
 import { useRouter } from "expo-router";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Animated, Image, NativeScrollEvent, NativeSyntheticEvent, Pressable, Text, View } from "react-native";
 
 const Home = () => {
+  const { reels, getReels } = useReelStore();
+  useEffect(() => {
+    if (reels.length === 0) {
+      getReels();
+    }
+  }, []);
   const router = useRouter();
   const videos = Object.values(videoMap);
-  const reels = Object.values(reelMap).slice(0, 4);
+
+  const topReels = reels.slice(0, 4);
+
   const headerTranslateY = useRef(new Animated.Value(0)).current;
   const lastScrollY = useRef(0);
 
@@ -60,7 +69,7 @@ const Home = () => {
       >
         {/* Grid */}
         <View className="flex-row flex-wrap p-2">
-          {reels.map((reel) => (
+          {topReels.map((reel) => (
             <Pressable
               key={reel.id}
               onPress={() =>

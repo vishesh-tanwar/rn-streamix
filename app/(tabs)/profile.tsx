@@ -1,8 +1,7 @@
 import VideoCard from "@/components/videoCard";
+import { videoMap } from "@/data/videos";
 import { MaterialIcons } from "@expo/vector-icons";
-import React from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
-import { videoMap } from ".";
 
 const profile = () => {
   const videos = Object.values(videoMap);
