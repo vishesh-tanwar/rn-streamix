@@ -1,44 +1,66 @@
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import { Video } from "@/data/videos";
+import { useIsFocused } from "@react-navigation/native";
 import { VideoView, useVideoPlayer } from "expo-video";
-import { useEffect } from "react";
-import { Video } from "@/app/(tabs)";
+import React, { useEffect, useState } from "react";
+import { Dimensions, Pressable, StyleSheet, Text, View } from "react-native";
 
-export default function ReelItem({
-    video,
-    isActive,
-}: {
-    video: Video;
-    isActive: boolean;
-}) {
-    const player = useVideoPlayer(
-        "https://www.w3schools.com/html/mov_bbb.mp4"
-    );
+const { height, width } = Dimensions.get("window");
+const ReelItem =
+    ({
+        video,
+        isActive,
+    }: {
+        video: Video;
+        isActive: boolean;
+    }) => {
+        const [paused, setPaused] = useState(false);
+        const isFocused = useIsFocused();
+        const player = useVideoPlayer(
+            "https://www.w3schools.com/html/mov_bbb.mp4",
+            (player) => {
+                player.loop = true;
+            }
+        );
 
-    // 🔥 control play/pause
-    useEffect(() => {
-        if (isActive) {
-            player.play();
-        } else {
-            player.pause();
-        }
-    }, [isActive]);
+        // 🔥 control play/pause
+        useEffect(() => {
+            if (!player) return;
 
-    return (
-        <View style={styles.container}>
-            <VideoView player={player} style={styles.video} />
+            if (isFocused && isActive && !paused) {
+                player.play();
+            } else {
+                player.pause();
+            }
+        }, [isActive, paused, isFocused, player]);
 
-            {/* 🔥 Overlay UI */}
-            <View style={styles.overlay}>
-                <Text style={styles.title}>{video.title}</Text>
-                <Text style={styles.desc}>{video.description}</Text>
+        return (
+
+            <View style={styles.container}>
+                <Pressable style={styles.video}
+                    onPress={() => {
+                        setPaused((prev) => !prev);
+                    }}>
+                    <VideoView
+                        player={player}
+                        style={styles.video}
+                        contentFit="cover"
+                        nativeControls={false}
+                    />
+
+                    {/* 🔥 Overlay UI */}
+                    <View style={styles.overlay}>
+                        <Text style={styles.title}>{video.title}</Text>
+                        <Text style={styles.desc}>{video.description}</Text>
+                    </View>
+                </Pressable>
             </View>
-        </View>
-    );
-}
+        );
+    }
 
 const styles = StyleSheet.create({
     container: {
-        height: "100%",
+        height: height,
+        width: width,
         backgroundColor: "black",
     },
     video: {
@@ -59,3 +81,5 @@ const styles = StyleSheet.create({
         marginTop: 4,
     },
 });
+
+export default React.memo(ReelItem)

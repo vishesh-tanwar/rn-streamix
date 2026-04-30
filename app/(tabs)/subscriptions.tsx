@@ -2,10 +2,10 @@ import ReactLogo from "@/assets/images/react-logo.png";
 import { CategoryBar } from "@/components/categoryBar";
 import CustomHeader from "@/components/customHeader";
 import VideoCard from "@/components/videoCard";
-import React, { useRef } from "react";
+import { videoMap } from "@/data/videos";
+import { useRef } from "react";
 import { Animated, Image, NativeScrollEvent, NativeSyntheticEvent, Pressable, Text, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { videoMap } from ".";
 
 
 const subscriptions = () => {

@@ -1,10 +1,9 @@
-import { View, StyleSheet, FlatList, Text, Image, Button, Pressable } from "react-native";
+import VideoCard from "@/components/videoCard";
+import { videoMap } from "@/data/videos";
 import { useLocalSearchParams } from "expo-router";
 import { VideoView, useVideoPlayer } from "expo-video";
-import VideoCard from "@/components/videoCard";
-import { videoMap } from "../(tabs)";
-import { ActivityIndicator } from "react-native";
 import { useEffect, useState } from "react";
+import { ActivityIndicator, FlatList, Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 export default function VideoScreen() {
     const { id } = useLocalSearchParams();

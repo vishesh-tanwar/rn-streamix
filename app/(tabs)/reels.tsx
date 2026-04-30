@@ -1,16 +1,15 @@
-import { View, Dimensions, FlatList } from "react-native";
-import { useLocalSearchParams } from "expo-router";
-import { useRef, useState } from "react";
-import { reelMap } from "./index";
 import ReelItem from "@/components/ReelItem";
+import { reelMap } from "@/data/videos";
+import { useLocalSearchParams } from "expo-router";
+import { useCallback, useMemo, useRef, useState } from "react";
+import { Dimensions, FlatList } from "react-native";
 
 const { height } = Dimensions.get("window");
 
-export default function reels() {
+export default function Reels() {
   const { reelId } = useLocalSearchParams();
 
-  const reels = Object.values(reelMap);
-  const initialIndex = reels.findIndex((r) => r.id === reelId);
+  const reels = useMemo(() => Object.values(reelMap), []); const initialIndex = reels.findIndex((r) => r.id === reelId);
 
   const [activeIndex, setActiveIndex] = useState(
     initialIndex >= 0 ? initialIndex : 0
@@ -25,7 +24,15 @@ export default function reels() {
       setActiveIndex(viewableItems[0].index);
     }
   }).current;
-
+  const renderItem = useCallback(
+    ({ item, index }: any) => (
+      <ReelItem
+        video={item}
+        isActive={index === activeIndex}
+      />
+    ),
+    [activeIndex]
+  );
   return (
     <FlatList
       data={reels}
@@ -37,9 +44,7 @@ export default function reels() {
       initialScrollIndex={activeIndex}
       onViewableItemsChanged={onViewableItemsChanged}
       viewabilityConfig={viewabilityConfig}
-      renderItem={({ item, index }) => (
-        <ReelItem video={item} isActive={index === activeIndex} />
-      )}
+      renderItem={renderItem}
       getItemLayout={(_, index) => ({
         length: height,
         offset: height * index,

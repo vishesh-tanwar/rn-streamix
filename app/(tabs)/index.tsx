@@ -1,138 +1,9 @@
 import CustomHeader from "@/components/customHeader";
 import VideoCard from "@/components/videoCard";
-import React, { useRef } from "react";
-import { Animated, Image, NativeScrollEvent, NativeSyntheticEvent, Pressable, Text, View } from "react-native";
+import { reelMap, videoMap } from "@/data/videos";
 import { useRouter } from "expo-router";
-
-export type Video = {
-  id: string;
-  title: string;
-  description: string;
-  channelName: string;
-  channelLogo: string;
-  thumbnail: string;
-  views: number;
-  likes: number;
-  duration: number;
-};
-
-export const videoMap: Record<string, Video> = {
-  "1": {
-    id: "1",
-    title: "Flutter vs React Native",
-    description: "Full comparison ",
-    channelName: "CodeWithVish",
-    channelLogo: "https://i.pravatar.cc/100",
-    thumbnail: "https://picsum.photos/300/207",
-    views: 12000,
-    likes: 500,
-    duration: 123421
-  },
-  "2": {
-    id: "2",
-    title: "Build YouTube Clone",
-    description: "Step by step jnfea jaenfja fdjanefjandj ajna afjaenfa jana ajeneajf fejnfenfe",
-    channelName: "DevHub",
-    channelLogo: "https://i.pravatar.cc/101",
-    thumbnail: "https://picsum.photos/300/204",
-    views: 54000,
-    likes: 1200,
-    duration: 123421
-
-  },
-  "3": {
-    id: "3",
-    title: "hey ya welcome to vlog",
-    description: "Step by step jsnfaj jfnajf akjsnjas fkjandfhoibnv ujebnv ouvn ouejnve er",
-    channelName: "DevHub",
-    channelLogo: "https://i.pravatar.cc/101",
-    thumbnail: "https://picsum.photos/300/202",
-    views: 54000,
-    likes: 1200,
-    duration: 123421
-
-  }, "4": {
-    id: "4",
-    title: "video 4",
-    description: "Step by ste 44444p",
-    channelName: "DevHub",
-    channelLogo: "https://i.pravatar.cc/101",
-    thumbnail: "https://picsum.photos/300/203",
-    views: 54000,
-    likes: 1200,
-    duration: 123421
-
-  }, "5": {
-    id: "5",
-    title: "video 5",
-    description: "Step by step 5555555",
-    channelName: "DevHub",
-    channelLogo: "https://i.pravatar.cc/101",
-    thumbnail: "https://picsum.photos/300/201",
-    views: 54000,
-    duration: 123421,
-    likes: 1200,
-  },
-};
-
-export const reelMap: Record<string, Video> = {
-  "1": {
-    id: "1",
-    title: "Flutter vs React Native",
-    description: "Full comparison ",
-    channelName: "CodeWithVish",
-    channelLogo: "https://i.pravatar.cc/100",
-    thumbnail: "https://picsum.photos/300/207",
-    views: 12000,
-    likes: 500,
-    duration: 123421
-  },
-  "2": {
-    id: "2",
-    title: "Build YouTube Clone",
-    description: "Step by step jnfea jaenfja fdjanefjandj ajna afjaenfa jana ajeneajf fejnfenfe",
-    channelName: "DevHub",
-    channelLogo: "https://i.pravatar.cc/101",
-    thumbnail: "https://picsum.photos/300/204",
-    views: 54000,
-    likes: 1200,
-    duration: 123421
-
-  },
-  "3": {
-    id: "3",
-    title: "hey ya welcome to vlog",
-    description: "Step by step jsnfaj jfnajf akjsnjas fkjandfhoibnv ujebnv ouvn ouejnve er",
-    channelName: "DevHub",
-    channelLogo: "https://i.pravatar.cc/101",
-    thumbnail: "https://picsum.photos/300/202",
-    views: 54000,
-    likes: 1200,
-    duration: 123421
-
-  }, "4": {
-    id: "4",
-    title: "video 4",
-    description: "Step by ste 44444p",
-    channelName: "DevHub",
-    channelLogo: "https://i.pravatar.cc/101",
-    thumbnail: "https://picsum.photos/300/203",
-    views: 54000,
-    likes: 1200,
-    duration: 123421
-
-  }, "5": {
-    id: "5",
-    title: "video 5",
-    description: "Step by step 5555555",
-    channelName: "DevHub",
-    channelLogo: "https://i.pravatar.cc/101",
-    thumbnail: "https://picsum.photos/300/201",
-    views: 54000,
-    duration: 123421,
-    likes: 1200,
-  },
-};
+import { useRef } from "react";
+import { Animated, Image, NativeScrollEvent, NativeSyntheticEvent, Pressable, Text, View } from "react-native";
 
 const Home = () => {
   const router = useRouter();
@@ -249,5 +120,51 @@ const Home = () => {
     </View>
   );
 };
+
+// import { useUserStore } from "@/state/userStore";
+// import { useState } from "react";
+
+// const Home = () => {
+//   const users = useUserStore().users;
+//   const id = useUserStore().id;
+//   const addUser = useUserStore().addUser;
+//   const removeUser = useUserStore().removeUser;
+//   const [name, setname] = useState("");
+//   const [email, setemail] = useState("");
+//   const [password, setpassword] = useState("");
+
+//   return (
+//     <View className="p-20">
+//       <TextInput placeholder="name" onChangeText={(val) => setname(val)} value={name} />
+//       <TextInput placeholder="email" onChangeText={(val) => setemail(val)} value={email} />
+//       <TextInput placeholder="password" onChangeText={(val) => setpassword(val)} value={password} />
+
+//       <Pressable onPress={() => {
+//         addUser({
+//           name: name,
+//           email: email,
+//           password: password,
+//           id: id.toString()
+//         });
+//         setname('');
+//         setemail('');
+//         setpassword('');
+//       }}>
+//         <Text>Add User</Text>
+//       </Pressable>
+
+//       {
+//         users.map((user) =>
+//           <View key={user.id}>
+//             <View className="p-2 flex-row">
+//               <Text>{user.name} {user.email} {user.password}</Text>
+//               <Button onPress={() => removeUser(user.id)} title="remove"></Button>
+//             </View>
+//           </View>
+//         )
+//       }
+//     </View>
+//   );
+// }
 
 export default Home;
