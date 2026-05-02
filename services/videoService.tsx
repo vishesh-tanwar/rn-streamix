@@ -1,9 +1,14 @@
 import { Video } from "@/type/reel";
 
 const sampleVideos = [
-    "https://samplelib.com/lib/preview/mp4/sample-5s.mp4",
-    "https://samplelib.com/lib/preview/mp4/sample-10s.mp4",
-    "https://samplelib.com/lib/preview/mp4/sample-15s.mp4",
+  "https://www.w3schools.com/html/mov_bbb.mp4", // ✅ your current one
+
+  "https://www.w3schools.com/html/movie.mp4",
+  "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+  "https://media.w3.org/2010/05/sintel/trailer.mp4",
+  "https://media.w3.org/2010/05/bunny/movie.mp4",
+  "https://media.w3.org/2010/05/video/movie_300.mp4",
+
 ];
 
 export const fetchVideos = async (

@@ -6,6 +6,7 @@ import { Reel } from "@/type/reel";
 import { useRouter } from "expo-router";
 import { useEffect, useRef } from "react";
 import {
+  ActivityIndicator,
   Animated,
   Image,
   NativeScrollEvent,
@@ -17,7 +18,8 @@ import {
 
 const Home = () => {
   const { reels, getReels } = useReelStore();
-  const { videos, getVideos } = useVideoStore();
+  const { videos, getVideos ,loading} = useVideoStore();
+  
   useEffect(() => {
     if (reels.length === 0) {
       getReels();
@@ -36,27 +38,43 @@ const Home = () => {
 
   const HEADER_HEIGHT = 120;
 
-  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const currentY = event.nativeEvent.contentOffset.y;
+  // const isFetchingRef = useRef(false);
 
-    if (currentY > lastScrollY.current + 15) {
-      // user scrolling DOWN → hide header
-      Animated.timing(headerTranslateY, {
-        toValue: -HEADER_HEIGHT,
-        duration: 350,
-        useNativeDriver: true,
-      }).start();
-    } else if (currentY < lastScrollY.current - 2) {
-      // user scrolling UP → show header
-      Animated.timing(headerTranslateY, {
-        toValue: 0,
-        duration: 150,
-        useNativeDriver: true,
-      }).start();
-    }
+const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+  const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+  const currentY = contentOffset.y;
 
-    lastScrollY.current = currentY;
-  };
+  // Header hide/show (unchanged)
+  if (currentY > lastScrollY.current + 15) {
+    Animated.timing(headerTranslateY, {
+      toValue: -HEADER_HEIGHT,
+      duration: 350,
+      useNativeDriver: true,
+    }).start();
+  } else if (currentY < lastScrollY.current - 2) {
+    Animated.timing(headerTranslateY, {
+      toValue: 0,
+      duration: 150,
+      useNativeDriver: true,
+    }).start();
+  }
+  lastScrollY.current = currentY;
+
+  // ✅ Pagination with ref guard
+  const isNearBottom =
+    layoutMeasurement.height + contentOffset.y >= contentSize.height - 200;
+
+  // if (isNearBottom && !isFetchingRef.current) {
+  //   isFetchingRef.current = true;
+  //   getVideos().finally(() => {
+  //     isFetchingRef.current = false;
+  //   });
+  // }
+  if(isNearBottom){
+    getVideos();
+  }
+};
+
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -76,9 +94,9 @@ const Home = () => {
       </Animated.View>
 
       <Animated.ScrollView
-        onScroll={handleScroll}
-        scrollEventThrottle={16}
-        contentContainerStyle={{ paddingTop: HEADER_HEIGHT }}
+         onScroll={handleScroll}
+  scrollEventThrottle={16}
+  contentContainerStyle={{ paddingTop: HEADER_HEIGHT }}
       >
         {/* Grid */}
         <View className="flex-row flex-wrap p-2">
@@ -139,6 +157,11 @@ const Home = () => {
           <VideoCard key={video.id} video={video} />
         ))}
       </Animated.ScrollView>
+      {loading && (
+      <View style={{ padding: 20 }}>
+        <ActivityIndicator size="large" color="orange" />
+      </View>
+    )}
     </View>
   );
 };
