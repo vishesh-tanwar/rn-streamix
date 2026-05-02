@@ -1,6 +1,7 @@
 import VideoCard from "@/components/videoCard";
 import { useVideoStore } from "@/state/videoStore";
-import { useLocalSearchParams } from "expo-router";
+import { MaterialIcons } from "@expo/vector-icons";
+import { router, useLocalSearchParams } from "expo-router";
 import { VideoView, useVideoPlayer } from "expo-video";
 import { useEffect, useState } from "react";
 import {
@@ -10,6 +11,7 @@ import {
   Pressable,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 
@@ -56,6 +58,14 @@ export default function VideoScreen() {
     <View style={{ flex: 1, backgroundColor: "white" }}>
       {/* Video Player */}
       <View>
+        <View className="bg-gray h-20">
+             <TouchableOpacity
+            onPress={()=> router.back()}
+            className="absolute left-6 pt-12"
+          >
+            <MaterialIcons name="arrow-back-ios" size={22} color="black" />
+          </TouchableOpacity>
+        </View>
         <VideoView
           player={player}
           style={styles.video}
