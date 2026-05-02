@@ -1,98 +1,160 @@
 import VideoCard from "@/components/videoCard";
-import { videoMap } from "@/data/videos";
+import { useVideoStore } from "@/state/videoStore";
 import { useLocalSearchParams } from "expo-router";
 import { VideoView, useVideoPlayer } from "expo-video";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, Image, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 export default function VideoScreen() {
-    const { id } = useLocalSearchParams();
+  const { id } = useLocalSearchParams();
+  const { videos, loading } = useVideoStore();
 
-    const videoUrl = "https://www.w3schools.com/html/mov_bbb.mp4";
+  const videoUrl = "https://www.w3schools.com/html/mov_bbb.mp4";
 
-    const player = useVideoPlayer(videoUrl, (player) => {
-        player.play();
+  const [isReady, setIsReady] = useState(false);
+
+  const player = useVideoPlayer(videoUrl);
+
+  // Play video ONLY when ready
+  useEffect(() => {
+    if (!player) return;
+
+    const unsub = player.addListener("statusChange", (event) => {
+      if (event.status === "readyToPlay") {
+        setIsReady(true);
+
+        // small delay prevents texture flicker on mount
+        setTimeout(() => {
+          player.play();
+        }, 80);
+      }
     });
-    const [isBuffering, setIsBuffering] = useState(true);
-    useEffect(() => {
-        const interval = setInterval(() => {
-            if (!player) return;
 
-            const current = player.currentTime || 0;
+    return () => unsub.remove();
+  }, [player]);
 
-            // crude buffering detection
-            setIsBuffering(current === 0);
-        }, 500);
+  // Get metadata
+  const videoMetaData = videos.find((v) => v.id === id);
 
-        return () => clearInterval(interval);
-    }, [player]);
-
-    useEffect(() => {
-        player.play();
-    }, [player]);
-
-    const videos = Object.values(videoMap);
-    const videoMetaData = videoMap[id as string];
+  if (!videoMetaData) {
     return (
-        <View className="flex-1 bg-white">
-
-            <VideoView
-                player={player}
-                style={styles.video}
-                allowsPictureInPicture
-                allowsVideoFrameAnalysis
-            />
-
-            {isBuffering && (
-                <View style={styles.loader}>
-                    <ActivityIndicator size="large" color="orange" />
-                </View>
-            )}
-
-            <FlatList
-                ListHeaderComponent={
-                    <View>
-                        <Text className="p-2" >{videoMetaData.title}</Text>
-                        <Text numberOfLines={2} className="px-2">{videoMetaData.description}</Text>
-                        <View className="flex-1 flex-row justify-between items-center">
-                            <View className="flex-row items-center my-2">
-                                <View className="bg-gray-300 rounded-full w-10 h-10 ml-2 overflow-hidden">
-                                    <Image source={{ uri: videoMetaData.channelLogo }} style={{ width: "100%", height: "100%" }} />
-                                </View>
-                                <Text className="ml-2">{videoMetaData.channelName}</Text>
-                            </View>
-                            <View>
-                                <Pressable
-                                    onPress={() => { }}
-                                    className="bg-orange-500 px-3 py-1 rounded-md mr-2"
-                                >
-                                    <Text className="text-white font-semibold">
-                                        Subscribe
-                                    </Text>
-                                </Pressable>
-                            </View>
-                        </View>
-                    </View>
-                }
-                data={videos}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => <VideoCard video={item} />}
-                contentContainerStyle={{ paddingBottom: 20 }}
-            />
-
-        </View>
+      <View style={styles.loader}>
+        <ActivityIndicator size="large" color="orange" />
+      </View>
     );
+  }
+
+  return (
+    <View style={{ flex: 1, backgroundColor: "white" }}>
+      {/* Video Player */}
+      <View>
+        <VideoView
+          player={player}
+          style={styles.video}
+          allowsPictureInPicture
+          allowsVideoFrameAnalysis={false}
+        />
+
+        {!isReady && (
+          <View style={styles.loader}>
+            <ActivityIndicator size="large" color="orange" />
+          </View>
+        )}
+      </View>
+
+      {loading ? (
+        <View style={styles.loader}>
+          <ActivityIndicator size="large" color="orange" />
+        </View>
+      ) : (
+        <FlatList
+          ListHeaderComponent={
+            <View style={{ paddingBottom: 10 }}>
+              <Text style={{ padding: 8, fontSize: 16, fontWeight: "600" }}>
+                {videoMetaData.title}
+              </Text>
+
+              <Text
+                numberOfLines={2}
+                style={{ paddingHorizontal: 8, color: "#444" }}
+              >
+                {videoMetaData.description}
+              </Text>
+
+              {/* Channel Info */}
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginTop: 10,
+                }}
+              >
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <View
+                    style={{
+                      backgroundColor: "#ccc",
+                      width: 40,
+                      height: 40,
+                      borderRadius: 20,
+                      overflow: "hidden",
+                      marginLeft: 10,
+                    }}
+                  >
+                    <Image
+                      source={{ uri: videoMetaData.channelLogo }}
+                      style={{ width: "100%", height: "100%" }}
+                    />
+                  </View>
+                  <Text style={{ marginLeft: 10, fontWeight: "500" }}>
+                    {videoMetaData.channelName}
+                  </Text>
+                </View>
+
+                <Pressable
+                  onPress={() => {}}
+                  style={{
+                    backgroundColor: "orange",
+                    paddingHorizontal: 14,
+                    paddingVertical: 6,
+                    borderRadius: 6,
+                    marginRight: 10,
+                  }}
+                >
+                  <Text style={{ color: "white", fontWeight: "bold" }}>
+                    Subscribe
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
+          }
+          data={videos}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <VideoCard video={item} />}
+          contentContainerStyle={{ paddingBottom: 30 }}
+        />
+      )}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-    video: { width: "100%", height: 300 },
-    loader: {
-        position: "absolute",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        justifyContent: "center",
-        alignItems: "center",
-    },
+  video: { width: "100%", height: 300, backgroundColor: "black" },
+  loader: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });
