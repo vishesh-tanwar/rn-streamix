@@ -2,14 +2,16 @@ import ReactLogo from "@/assets/images/react-logo.png";
 import { CategoryBar } from "@/components/categoryBar";
 import CustomHeader from "@/components/customHeader";
 import VideoCard from "@/components/videoCard";
-import { videoMap } from "@/data/videos";
+import { useVideoStore } from "@/state/videoStore";
+// import { videoMap } from "@/data/videos";
 import { useRef } from "react";
 import { Animated, Image, NativeScrollEvent, NativeSyntheticEvent, Pressable, Text, View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { FlatList, ScrollView } from "react-native-gesture-handler";
 
 
 const subscriptions = () => {
-  const videos = Object.values(videoMap);
+  // const videos = Object.values(videoMap);
+  const videos = useVideoStore().videos;
   const headerTranslateY = useRef(new Animated.Value(0)).current;
   const lastScrollY = useRef(0);
 
@@ -76,8 +78,8 @@ const subscriptions = () => {
         </View>
         <CategoryBar categories={["All", "Today", "Videos", "Reels"]} />
 
-        {videos.map((item) => (
-          <VideoCard key={item.id} video={item} />
+        {videos.map((video) => (
+          <VideoCard key={video.id} video={video} />
         ))}
       </Animated.ScrollView>
     </View>

@@ -1,5 +1,5 @@
-import { Video } from "@/data/videos";
 import { formatDuration } from "@/functions/onNumbers";
+import { Video } from "@/type/reel";
 import { useRouter } from "expo-router";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
