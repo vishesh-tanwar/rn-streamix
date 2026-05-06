@@ -82,6 +82,14 @@ const ReelItem =
                             <Text style={styles.desc} numberOfLines={showDiscription ? 0 : 2} >{video.description}</Text>
                         </Pressable>
                     </View>
+                    <View className="absolute bottom-30 right-5 justify-between">
+                        <View>
+                            <MaterialIcons name="thumb-up" color={"white"} className="pb-7" size={30} />
+                            <MaterialIcons name="thumb-down" color={"white"} className="pb-7" size={30} />
+                            <MaterialIcons name="comment" color={"white"} className="pb-7" size={30} />
+                            <MaterialIcons name="bookmark" color={"white"} className="pb-7" size={30} />
+                        </View>
+                    </View>
                 </Pressable>
             </View>
         );
