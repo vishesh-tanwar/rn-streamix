@@ -1,8 +1,9 @@
 import VideoCard from "@/components/videoCard";
 import { useVideoStore } from "@/state/videoStore";
-import { useLocalSearchParams } from "expo-router";
+import { MaterialIcons } from "@expo/vector-icons";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { VideoView, useVideoPlayer } from "expo-video";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -10,19 +11,23 @@ import {
   Pressable,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 
 export default function VideoScreen() {
   const { id } = useLocalSearchParams();
   const { videos, loading } = useVideoStore();
-
-  const videoUrl = "https://www.w3schools.com/html/mov_bbb.mp4";
+    const video = videos.find((v)=>v.id===id)
+    if (!video) {
+        return <ActivityIndicator/>;
+    }
+//   const videoUrl = "https://www.w3schools.com/html/mov_bbb.mp4";
 
   const [isReady, setIsReady] = useState(false);
 
-  const player = useVideoPlayer(videoUrl);
-
+  const player = useVideoPlayer(video.videoUrl);
+    
   // Play video ONLY when ready
   useEffect(() => {
     if (!player) return;
@@ -41,6 +46,23 @@ export default function VideoScreen() {
     return () => unsub.remove();
   }, [player]);
 
+//   useFocusEffect(
+//   useCallback(() => {
+//     // screen focused → do nothing (your existing logic handles play)
+
+//     return () => {
+//       // 🔥 screen UNFOCUSED (navigate away)
+//       if (!player) return;
+
+//       try {
+//         player.pause();
+//         player.currentTime = 0; // reset to start
+//       } catch (e) {
+//         console.warn('Player already released');
+//       }
+//     };
+//   }, [player])
+// );
   // Get metadata
   const videoMetaData = videos.find((v) => v.id === id);
 
@@ -56,6 +78,20 @@ export default function VideoScreen() {
     <View style={{ flex: 1, backgroundColor: "white" }}>
       {/* Video Player */}
       <View>
+        <View className="bg-gray h-20">
+             <TouchableOpacity
+            onPress={() => {
+            if (player) {
+                player.pause();
+                player.currentTime = 0;
+            }
+            router.back();
+            }}
+            className="absolute left-6 pt-12"
+          >
+            <MaterialIcons name="arrow-back-ios" size={22} color="black" />
+          </TouchableOpacity>
+        </View>
         <VideoView
           player={player}
           style={styles.video}
@@ -158,3 +194,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
+
+
+// akshiota here
