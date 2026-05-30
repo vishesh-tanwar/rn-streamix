@@ -17,17 +17,21 @@ import {
 
 export default function VideoScreen() {
   const { id } = useLocalSearchParams();
+  console.log(id);
+
   const { videos, loading } = useVideoStore();
-    const video = videos.find((v)=>v.id===id)
-    if (!video) {
-        return <ActivityIndicator/>;
-    }
-//   const videoUrl = "https://www.w3schools.com/html/mov_bbb.mp4";
+  const video = videos.find((v) => v.videoId === id);
+  console.log(video);
+
+  if (!video) {
+    return <ActivityIndicator />;
+  }
+  //   const videoUrl = "https://www.w3schools.com/html/mov_bbb.mp4";
 
   const [isReady, setIsReady] = useState(false);
 
   const player = useVideoPlayer(video.videoUrl);
-    
+
   // Play video ONLY when ready
   useEffect(() => {
     if (!player) return;
@@ -46,25 +50,25 @@ export default function VideoScreen() {
     return () => unsub.remove();
   }, [player]);
 
-//   useFocusEffect(
-//   useCallback(() => {
-//     // screen focused → do nothing (your existing logic handles play)
+  //   useFocusEffect(
+  //   useCallback(() => {
+  //     // screen focused → do nothing (your existing logic handles play)
 
-//     return () => {
-//       // 🔥 screen UNFOCUSED (navigate away)
-//       if (!player) return;
+  //     return () => {
+  //       // 🔥 screen UNFOCUSED (navigate away)
+  //       if (!player) return;
 
-//       try {
-//         player.pause();
-//         player.currentTime = 0; // reset to start
-//       } catch (e) {
-//         console.warn('Player already released');
-//       }
-//     };
-//   }, [player])
-// );
+  //       try {
+  //         player.pause();
+  //         player.currentTime = 0; // reset to start
+  //       } catch (e) {
+  //         console.warn('Player already released');
+  //       }
+  //     };
+  //   }, [player])
+  // );
   // Get metadata
-  const videoMetaData = videos.find((v) => v.id === id);
+  const videoMetaData = videos.find((v) => v.videoId === id);
 
   if (!videoMetaData) {
     return (
@@ -79,13 +83,13 @@ export default function VideoScreen() {
       {/* Video Player */}
       <View>
         <View className="bg-gray h-20">
-             <TouchableOpacity
+          <TouchableOpacity
             onPress={() => {
-            if (player) {
+              if (player) {
                 player.pause();
                 player.currentTime = 0;
-            }
-            router.back();
+              }
+              router.back();
             }}
             className="absolute left-6 pt-12"
           >
@@ -146,12 +150,12 @@ export default function VideoScreen() {
                     }}
                   >
                     <Image
-                      source={{ uri: videoMetaData.channelLogo }}
+                      source={{ uri: videoMetaData.userImage }}
                       style={{ width: "100%", height: "100%" }}
                     />
                   </View>
                   <Text style={{ marginLeft: 10, fontWeight: "500" }}>
-                    {videoMetaData.channelName}
+                    {videoMetaData.userName}
                   </Text>
                 </View>
 
@@ -173,7 +177,7 @@ export default function VideoScreen() {
             </View>
           }
           data={videos}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.videoId}
           renderItem={({ item }) => <VideoCard video={item} />}
           contentContainerStyle={{ paddingBottom: 30 }}
         />
@@ -194,6 +198,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
-
 
 // akshiota here

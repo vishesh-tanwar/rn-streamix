@@ -1,10 +1,40 @@
 import VideoCard from "@/components/videoCard";
-import { videoMap } from "@/data/videos";
+import { useVideoStore } from "@/state/videoStore";
 import { MaterialIcons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect, useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 
 const profile = () => {
-  const videos = Object.values(videoMap);
+  const videos = useVideoStore((state) => state.videos);
+  const [token, setToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadToken = async () => {
+      const storedToken = await AsyncStorage.getItem("authToken");
+      console.log("Token:", storedToken);
+      setToken(storedToken);
+      setLoading(false);
+    };
+
+    loadToken();
+  }, []);
+
+  if (loading) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (!token) {
+    return (
+      <View className="flex-1 justify-center items-center">
+        <Text className="text-lg font-bold">
+          Please log in to view your profile.
+        </Text>
+      </View>
+    );
+  }
+
   return (
     <ScrollView className="flex-1 bg-white p-4">
       <View className="flex-row justify-start items-center h-25 mb-4">
@@ -25,11 +55,16 @@ const profile = () => {
       >
         {videos.map((item) => (
           <View
-            key={item.id}
+            key={item.videoId}
             className="mr-4"
             style={{ width: 150, height: 80 }} // 👈 final size you want
           >
-            <VideoCard height={80} width={150} showChannelIcon={false} video={item} />
+            <VideoCard
+              height={80}
+              width={150}
+              showChannelIcon={false}
+              video={item}
+            />
           </View>
         ))}
       </ScrollView>

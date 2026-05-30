@@ -21,7 +21,7 @@ export default function VideoCard({
   const router = useRouter();
   return (
     <Pressable
-      onPress={() => router.push(`/video/${video.id}`)}
+      onPress={() => router.push(`/video/${video.videoId}`)}
       className="m-2 bg-white rounded-lg overflow-hidden"
       style={{ width }}
     >
@@ -71,7 +71,7 @@ export default function VideoCard({
         {showChannelIcon && (
           <View className="bg-gray-300 rounded-full w-10 h-10 ml-2 overflow-hidden">
             <Image
-              source={{ uri: video.channelLogo }}
+              source={{ uri: video.userImage }}
               style={{ width: "100%", height: "100%" }}
             />
           </View>
@@ -79,7 +79,7 @@ export default function VideoCard({
         <View className="px-2 flex-1 pb-2">
           <Text numberOfLines={1}>{video.description}</Text>
           <View className="flex-1 flex-row justify-between items-center">
-            <Text className="text-sm text-gray-500">{video.channelName}</Text>
+            <Text className="text-sm text-gray-500">{video.userName}</Text>
             <Text className="text-sm text-gray-500">
               Views : {video.views} | Likes : {video.likes}
             </Text>

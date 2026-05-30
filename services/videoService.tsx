@@ -1,33 +1,42 @@
 import { Video } from "@/type/reel";
 
-const sampleVideos = [
-  "https://www.w3schools.com/html/mov_bbb.mp4", // ✅ your current one
-
-  "https://www.w3schools.com/html/movie.mp4",
-  "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
-  "https://media.w3.org/2010/05/sintel/trailer.mp4",
-  "https://media.w3.org/2010/05/bunny/movie.mp4",
-  "https://media.w3.org/2010/05/video/movie_300.mp4",
-];
-
 export const fetchVideos = async (
   page: number,
   limit: number
 ): Promise<Video[]> => {
   const offset = (page - 1) * limit;
   const res = await fetch(
-    `https://dummyjson.com/posts?limit=${limit}&skip=${offset}`
+    `http://localhost:8081/videos/get?page=${page}&size=${limit}`
   );
   const data = await res.json();
-  return data.posts.map((post: any, index: number) => ({
-    id: String(post.id),
+  console.log(data.content);
+
+  return data.content.map((post: Video, index: number) => ({
+    videoId: String(post.videoId),
     title: post.title,
-    description: post.body,
-    channelName: `Creator ${post.userId}`,
-    channelLogo: `https://i.pravatar.cc/150?img=${post.userId}`,
-    thumbnail: `https://picsum.photos/400/700?random=${post.id}`,
-    videoUrl: sampleVideos[index % sampleVideos.length],
-    likes: post.reactions.likes || 100,
+    description: post.description,
+    userId: post.userId,
+    userName: post.userName,
+    userImage: post.userImage,
+    thumbnail: post.thumbnail,
+    videoUrl: post.videoUrl,
+    likes: post.likes || 100,
     views: Math.floor(Math.random() * 100000),
   }));
+};
+
+export const UploadVideo = async (videoData: FormData) => {
+  try {
+    const res = await fetch(`http://localhost:8081/videos/upload`, {
+      method: "POST",
+      body: videoData,
+    });
+    console.log(res);
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Error uploading video:", error);
+    throw error;
+  }
 };

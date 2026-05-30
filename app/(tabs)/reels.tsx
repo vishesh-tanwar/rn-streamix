@@ -1,19 +1,9 @@
 import ReelItem from "@/components/ReelItem";
 import { useReelStore } from "@/state/reelStore";
 import { useLocalSearchParams } from "expo-router";
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-import {
-  ActivityIndicator,
-  Dimensions,
-  FlatList,
-  View,
-} from "react-native";
+import { ActivityIndicator, Dimensions, FlatList, View } from "react-native";
 
 const { height } = Dimensions.get("window");
 
@@ -22,11 +12,7 @@ export default function Reels() {
 
   const flatListRef = useRef<FlatList>(null);
 
-  const {
-    reels,
-    getReels,
-    loading,
-  } = useReelStore();
+  const { reels, getReels, loading } = useReelStore();
 
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -41,9 +27,7 @@ export default function Reels() {
   useEffect(() => {
     if (reels.length === 0) return;
 
-    const index = reels.findIndex(
-      (r) => r.id === reelId
-    );
+    const index = reels.findIndex((r) => r.videoId === reelId);
 
     if (index >= 0) {
       setActiveIndex(index);
@@ -58,13 +42,11 @@ export default function Reels() {
   }, [reels, reelId]);
 
   // ✅ Detect active reel
-  const onViewableItemsChanged = useRef(
-    ({ viewableItems }: any) => {
-      if (viewableItems.length > 0) {
-        setActiveIndex(viewableItems[0].index);
-      }
+  const onViewableItemsChanged = useRef(({ viewableItems }: any) => {
+    if (viewableItems.length > 0) {
+      setActiveIndex(viewableItems[0].index);
     }
-  ).current;
+  }).current;
 
   const viewabilityConfig = useRef({
     itemVisiblePercentThreshold: 80,
@@ -73,10 +55,7 @@ export default function Reels() {
   // ✅ Optimized render
   const renderItem = useCallback(
     ({ item, index }: any) => (
-      <ReelItem
-        video={item}
-        isActive={index === activeIndex}
-      />
+      <ReelItem video={item} isActive={index === activeIndex} />
     ),
     [activeIndex]
   );
@@ -99,13 +78,11 @@ export default function Reels() {
           offset: height * index,
           index,
         })}
-
         // ✅ Pagination
         onEndReached={() => {
           getReels();
         }}
         onEndReachedThreshold={0.5}
-
         // ✅ Performance
         initialNumToRender={3}
         maxToRenderPerBatch={3}

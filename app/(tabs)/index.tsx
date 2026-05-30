@@ -2,7 +2,7 @@ import CustomHeader from "@/components/customHeader";
 import VideoCard from "@/components/videoCard";
 import { useReelStore } from "@/state/reelStore";
 import { useVideoStore } from "@/state/videoStore";
-import { Reel } from "@/type/reel";
+import { Video } from "@/type/reel";
 import { useRouter } from "expo-router";
 import { useEffect, useRef } from "react";
 import {
@@ -18,8 +18,8 @@ import {
 
 const Home = () => {
   const { reels, getReels } = useReelStore();
-  const { videos, getVideos ,loading} = useVideoStore();
-  
+  const { videos, getVideos, loading } = useVideoStore();
+
   useEffect(() => {
     if (reels.length === 0) {
       getReels();
@@ -31,7 +31,7 @@ const Home = () => {
 
   const router = useRouter();
 
-  const topReels = reels.slice(0, 4);
+  const topReels = videos.slice(0, 4);
 
   const headerTranslateY = useRef(new Animated.Value(0)).current;
   const lastScrollY = useRef(0);
@@ -40,41 +40,42 @@ const Home = () => {
 
   // const isFetchingRef = useRef(false);
 
-const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-  const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
-  const currentY = contentOffset.y;
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+    const currentY = contentOffset.y;
 
-  // Header hide/show (unchanged)
-  if (currentY > lastScrollY.current + 15) {
-    Animated.timing(headerTranslateY, {
-      toValue: -HEADER_HEIGHT,
-      duration: 350,
-      useNativeDriver: true,
-    }).start();
-  } else if (currentY < lastScrollY.current - 2) {
-    Animated.timing(headerTranslateY, {
-      toValue: 0,
-      duration: 150,
-      useNativeDriver: true,
-    }).start();
-  }
-  lastScrollY.current = currentY;
+    // Header hide/show (unchanged)
+    if (currentY > lastScrollY.current + 15) {
+      Animated.timing(headerTranslateY, {
+        toValue: -HEADER_HEIGHT,
+        duration: 350,
+        useNativeDriver: true,
+      }).start();
+    } else if (currentY < lastScrollY.current - 2) {
+      Animated.timing(headerTranslateY, {
+        toValue: 0,
+        duration: 150,
+        useNativeDriver: true,
+      }).start();
+    }
+    lastScrollY.current = currentY;
 
-  // ✅ Pagination with ref guard
-  const isNearBottom =
-    layoutMeasurement.height + contentOffset.y >= contentSize.height - 200;
+    // ✅ Pagination with ref guard
+    const isNearBottom =
+      layoutMeasurement.height + contentOffset.y >= contentSize.height - 200;
 
-  // if (isNearBottom && !isFetchingRef.current) {
-  //   isFetchingRef.current = true;
-  //   getVideos().finally(() => {
-  //     isFetchingRef.current = false;
-  //   });
-  // }
-  if(isNearBottom){
-    getVideos();
-  }
-};
+    // if (isNearBottom && !isFetchingRef.current) {
+    //   isFetchingRef.current = true;
+    //   getVideos().finally(() => {
+    //     isFetchingRef.current = false;
+    //   });
+    // }
+    if (isNearBottom) {
+      getVideos();
+    }
+  };
 
+  console.log(topReels);
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -94,19 +95,19 @@ const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
       </Animated.View>
 
       <Animated.ScrollView
-         onScroll={handleScroll}
-  scrollEventThrottle={16}
-  contentContainerStyle={{ paddingTop: HEADER_HEIGHT }}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+        contentContainerStyle={{ paddingTop: HEADER_HEIGHT }}
       >
         {/* Grid */}
         <View className="flex-row flex-wrap p-2">
-          {topReels.map((reel: Reel) => (
+          {topReels.map((reel: Video) => (
             <Pressable
-              key={reel.id}
+              key={reel.videoId}
               onPress={() =>
                 router.push({
                   pathname: "/(tabs)/reels",
-                  params: { reelId: reel.id },
+                  params: { reelId: reel.videoId },
                 })
               }
               style={{
@@ -154,14 +155,14 @@ const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
 
         {/* Map */}
         {videos.map((video) => (
-          <VideoCard key={video.id} video={video} />
+          <VideoCard key={video.videoId} video={video} />
         ))}
       </Animated.ScrollView>
       {loading && (
-      <View style={{ padding: 20 }}>
-        <ActivityIndicator size="large" color="orange" />
-      </View>
-    )}
+        <View style={{ padding: 20 }}>
+          <ActivityIndicator size="large" color="orange" />
+        </View>
+      )}
     </View>
   );
 };
