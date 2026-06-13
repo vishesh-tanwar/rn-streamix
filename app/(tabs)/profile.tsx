@@ -1,25 +1,53 @@
 import VideoCard from "@/components/videoCard";
+import { useUserStore } from "@/state/userStore";
 import { useVideoStore } from "@/state/videoStore";
 import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import {
+  Pressable,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { TextInput } from "react-native-gesture-handler";
 
 const profile = () => {
   const videos = useVideoStore((state) => state.videos);
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const loginFn = useUserStore().login;
+  const validateTokenFn = useUserStore().validateToken;
 
   useEffect(() => {
     const loadToken = async () => {
       const storedToken = await AsyncStorage.getItem("authToken");
-      console.log("Token:", storedToken);
-      setToken(storedToken);
+      console.log("Stored token:", storedToken);
+
+      const isValid = await validateTokenFn(storedToken || "");
+      if (isValid) {
+        setToken(storedToken);
+      } else {
+        setToken(null);
+      }
       setLoading(false);
     };
 
     loadToken();
-  }, []);
+  }, [token]);
+
+  const login = async (email: string, password: string) => {
+    try {
+      await loginFn(email, password);
+      const storedToken = await AsyncStorage.getItem("authToken");
+      setToken(storedToken);
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
+  };
 
   if (loading) {
     return <Text>Loading...</Text>;
@@ -27,10 +55,34 @@ const profile = () => {
 
   if (!token) {
     return (
-      <View className="flex-1 justify-center items-center">
-        <Text className="text-lg font-bold">
-          Please log in to view your profile.
-        </Text>
+      <View className="flex-1 justify-center px-6">
+        <Text className="text-3xl font-bold text-center mb-8">Login</Text>
+
+        <TextInput
+          className="border border-gray-300 rounded-lg p-4 mb-4"
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+
+        <TextInput
+          className="border border-gray-300 rounded-lg p-4 mb-6"
+          placeholder="Password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+        />
+
+        <TouchableOpacity
+          className="bg-blue-500 p-4 rounded-lg"
+          onPress={async () => await login(email, password)}
+        >
+          <Text className="text-white text-center font-bold text-lg">
+            Login
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   }

@@ -1,4 +1,4 @@
-import { login } from "@/services/userService";
+import { login, validateToken } from "@/services/userService";
 import { create } from "zustand";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -15,7 +15,8 @@ type UserState = {
   addUser: (user: User) => void;
   removeUser: (id: string) => void;
   editUser: (user: User) => void;
-  login: (email: string, password: string) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<Boolean>;
+  validateToken: (token: string) => Promise<Boolean>;
 };
 
 export const useUserStore = create<UserState>((set) => ({
@@ -55,4 +56,13 @@ export const useUserStore = create<UserState>((set) => ({
         u.id === updatedUser.id ? { ...u, ...updatedUser } : u
       ),
     })),
+  validateToken: async (token: string) => {
+    try {
+      const isValidate = await validateToken(token);
+      return isValidate;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  },
 }));

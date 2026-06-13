@@ -75,8 +75,6 @@ const Home = () => {
     }
   };
 
-  console.log(topReels);
-
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       {/* Header */}

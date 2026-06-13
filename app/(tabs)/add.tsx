@@ -64,7 +64,6 @@ const AddContent = () => {
 
       {/* Type Selector */}
       <View className="flex flex-row gap-4 mt-4">
-        ,
         <TouchableOpacity
           onPress={() => setType("reel")}
           className={`p-3 rounded-xl border ${
@@ -94,7 +93,7 @@ const AddContent = () => {
 
       {/* Description */}
       <TextInput
-        className="border-2 border-gray-300 p-3 rounded-xl text-lg mt-4 h-32"
+        className="border-2 border-gray-300 p-3 rounded-xl text-lg mt-4 h-100"
         placeholder="Enter Description"
         value={description}
         onChangeText={setDescription}
