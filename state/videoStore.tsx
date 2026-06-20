@@ -7,9 +7,10 @@ type videoState = {
   videos: Video[];
   page: number;
   loading: boolean;
+  videoloading: boolean;
   hasMore: boolean;
   getVideos: () => Promise<void>;
-  uploadVideo: (videoData: FormData) => Promise<void>;
+  uploadVideo: (videoData: FormData) => Promise<UploadResponse>;
 };
 
 export const useVideoStore = create<videoState>((set, get) => ({
@@ -17,6 +18,7 @@ export const useVideoStore = create<videoState>((set, get) => ({
   page: 0,
   loading: false,
   hasMore: true,
+  videoloading: false,
   getVideos: async () => {
     const { page, loading, hasMore, videos } = get();
     if (loading || !hasMore) return;
@@ -35,10 +37,18 @@ export const useVideoStore = create<videoState>((set, get) => ({
   },
   uploadVideo: async (videoData) => {
     try {
-      set({ loading: true });
-      UploadVideo(videoData);
+      set({ videoloading: true });
+      const response = await UploadVideo(videoData);
+      set({ videoloading: false });
+      return response;
     } catch (error) {
-      set({ loading: false });
+      set({ videoloading: false });
+      throw error;
     }
   },
 }));
+
+export type UploadResponse = {
+  message: string;
+  status: string;
+};

@@ -1,5 +1,7 @@
+import { UploadResponse } from "@/state/videoStore";
 import { Video } from "@/type/reel";
 import { url } from "@/utils/strings";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const fetchVideos = async (
   page: number,
@@ -25,8 +27,9 @@ export const fetchVideos = async (
       userImage: post.userImage,
       thumbnail: post.thumbnail,
       videoUrl: post.videoUrl,
-      likes: post.likes || 100,
-      views: Math.floor(Math.random() * 100000),
+      likes: post.likes || 0,
+      views: 0,
+      duration: post.duration || 0,
     }));
   } catch (error) {
     console.error("Error fetching videos:", error);
@@ -34,9 +37,18 @@ export const fetchVideos = async (
   }
 };
 
-export const UploadVideo = async (videoData: FormData) => {
+export const UploadVideo = async (
+  videoData: FormData
+): Promise<UploadResponse> => {
   try {
+    const token = await AsyncStorage.getItem("authToken");
+    if (!token) {
+      throw new Error("No auth token found");
+    }
     const res = await fetch(`${url}:8081/videos/upload`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
       method: "POST",
       body: videoData,
     });

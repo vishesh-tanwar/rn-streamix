@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import * as DocumentPicker from "expo-document-picker";
 import { UploadVideo } from "@/services/videoService";
 import { useVideoStore } from "@/state/videoStore";
@@ -11,8 +17,11 @@ const AddContent = () => {
   const [video, setVideo] = useState<DocumentPicker.DocumentPickerAsset | null>(
     null
   );
+  const [thumbnail, setThumbnail] = useState<string | null>(null);
 
   const uploadVideo = useVideoStore().uploadVideo;
+
+  const videoLoading = useVideoStore((state) => state.videoloading);
 
   const pickVideo = async () => {
     const result = await DocumentPicker.getDocumentAsync({
@@ -24,19 +33,34 @@ const AddContent = () => {
     }
   };
 
-  const handleSubmit = () => {
+  const pickThumbnail = async () => {
+    const result = await DocumentPicker.getDocumentAsync({
+      type: "image/*",
+    });
+
+    if (result.assets && result.assets.length > 0) {
+      setThumbnail(result.assets[0].uri);
+    }
+  };
+
+  const handleSubmit = async () => {
     console.log({
       title,
       description,
       type,
       video,
     });
-    if (video == null || title.trim() === "" || description.trim() === "") {
+    if (
+      video == null ||
+      title.trim() === "" ||
+      description.trim() === "" ||
+      thumbnail == null
+    ) {
       return;
     }
     const formData = new FormData();
     formData.append("title", title);
-    formData.append("type", type);
+    formData.append("type", type === "reel" ? "0" : "1");
     formData.append("description", description);
 
     if (video) {
@@ -47,7 +71,27 @@ const AddContent = () => {
       } as any);
     }
 
-    uploadVideo(formData);
+    if (thumbnail) {
+      formData.append("thumbnail", {
+        uri: thumbnail,
+        type: "image/jpeg", // Assuming JPEG for simplicity
+        name: "thumbnail.jpg",
+      } as any);
+    }
+
+    const response = await uploadVideo(formData);
+
+    if (response["status"] === "200") {
+      console.log("Video uploaded successfully:", response);
+      // Reset the form
+      setTitle("");
+      setDescription("");
+      setType("reel");
+      setVideo(null);
+      setThumbnail(null);
+    } else {
+      console.error("Failed to upload video");
+    }
   };
 
   return (
@@ -59,6 +103,17 @@ const AddContent = () => {
       >
         <Text className="text-lg">
           {video ? "Video Selected ✔️" : "Upload Video"}
+        </Text>
+      </TouchableOpacity>
+
+      <View className="h-4" />
+
+      <TouchableOpacity
+        onPress={pickThumbnail}
+        className="border-2 border-gray-400 p-4 rounded-xl"
+      >
+        <Text className="text-lg">
+          {thumbnail ? "thumbnail Selected ✔️" : "Upload Thumbnail"}
         </Text>
       </TouchableOpacity>
 
@@ -101,14 +156,20 @@ const AddContent = () => {
       />
 
       {/* Submit */}
-      <TouchableOpacity
-        onPress={handleSubmit}
-        className="bg-green-600 p-4 rounded-xl mt-6"
-      >
-        <Text className="text-center text-white text-lg font-semibold">
-          Submit
-        </Text>
-      </TouchableOpacity>
+      {!videoLoading ? (
+        <TouchableOpacity
+          onPress={handleSubmit}
+          className="bg-green-600 p-4 rounded-xl mt-6"
+        >
+          <Text className="text-center text-white text-lg font-semibold">
+            Submit
+          </Text>
+        </TouchableOpacity>
+      ) : (
+        <View style={{ padding: 20 }}>
+          <ActivityIndicator size="large" color="orange" />
+        </View>
+      )}
     </View>
   );
 };

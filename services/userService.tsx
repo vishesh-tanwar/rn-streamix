@@ -16,8 +16,11 @@ export const login = async (email: string, password: string) => {
     });
 
     const data = await res.json();
-
-    return data.token;
+    if (data && data.token) {
+      return data.token;
+    } else {
+      throw new Error("Invalid response from server");
+    }
   } catch (error) {
     return undefined; // Return undefined in case of an error
   }

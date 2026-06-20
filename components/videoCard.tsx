@@ -45,7 +45,7 @@ export default function VideoCard({
           }}
         >
           <Text style={{ color: "white", fontSize: 12 }}>
-            {formatDuration(video.duration ?? 0)}
+            {video.duration ?? 0}
           </Text>
         </View>
 

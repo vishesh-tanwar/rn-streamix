@@ -25,7 +25,6 @@ const profile = () => {
   useEffect(() => {
     const loadToken = async () => {
       const storedToken = await AsyncStorage.getItem("authToken");
-      console.log("Stored token:", storedToken);
 
       const isValid = await validateTokenFn(storedToken || "");
       if (isValid) {

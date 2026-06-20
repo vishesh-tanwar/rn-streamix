@@ -26,14 +26,14 @@ export const useUserStore = create<UserState>((set) => ({
     try {
       const token = await login(email, password);
 
+      if (token === undefined) {
+        return false;
+      }
       // Save token
       await AsyncStorage.setItem("authToken", token);
 
-      console.log("Login successful, token stored:", token);
-
       return true;
     } catch (error) {
-      console.error("Login failed:", error);
       return false;
     }
   },
